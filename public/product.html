@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Notes</title>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <style>
+      body{}
+      .container{
+          width:900px;
+          margin-left:auto;
+          margin-right:auto;
+          margin-top: 5%;
+          margin-bottom:5%;
+      }
+      h2 {
+          color: #773cff;
+      }
+      table{
+          width: 100%;
+      }
+      th {
+          background-color: #773cff;
+          color: white;
+      }
+
+      tr:nth-child(even) {
+          background-color: #f2f2f2;
+      }
+
+      th,
+      td {
+          padding: 15px;
+          border: 1px solid black;
+      }
+  </style>
+</head>
+
+<body>
+  <div class='container'>
+    <h2>Products</h2>
+    <table id="table">
+      <tr>
+        <th>Product Id</th>
+        <th>Product Code</th>
+        <th>Product name</th>
+        <th>Product Price</th>
+      </tr>
+      <tr id="products"></tr>
+    </table>
+
+    <script>
+      $.get('http://127.0.0.1:3000/api/products/', function(data, status) {
+        if (status == 'success') {
+          const products = data;
+
+          const table = document.getElementById('table');
+
+          for (var i = 0; i < products.length; i++) {
+            let row = table.insertRow(i + 1);
+
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            let cell3 = row.insertCell(2);
+            let cell4 = row.insertCell(3);
+
+            cell1.innerHTML = products[i].productId;
+            cell2.innerHTML = products[i].productCode || '';
+            cell3.innerHTML = products[i].name;
+            cell4.innerHTML = products[i].price || '';
+          }
+        }
+      });
+    </script>
+  </div>
+  <div class='container'>
+    <h2>Transactions</h2>
+    <table id="table-1">
+      <tr>
+        <th>Product Id</th>
+        <th>Product Code</th>
+        <th>Product name</th>
+        <th>Product Price</th>
+        <th>Product Quantity</th>
+        <th>Product Total Price</th>
+        <th>Product Created</th>
+      </tr>
+      <tr id="transsctions"></tr>
+    </table>
+
+    <script>
+      $.get('http://127.0.0.1:3000/api/transactions/', function(data, status) {
+        if (status == 'success') {
+          const transactions = data;
+
+          const table = document.getElementById('table-1');
+
+          for (var i = 0; i < transactions.length; i++) {
+            let row = table.insertRow(i + 1);
+
+            let cell1 = row.insertCell(0);
+            let cell2 = row.insertCell(1);
+            let cell3 = row.insertCell(2);
+            let cell4 = row.insertCell(3);
+            let cell5 = row.insertCell(4);
+            let cell6 = row.insertCell(5);
+            let cell7 = row.insertCell(6);
+
+            cell1.innerHTML = transactions[i].transactionId;
+            cell2.innerHTML = transactions[i].productCode || '';
+            cell3.innerHTML = transactions[i].name;
+            cell4.innerHTML = transactions[i].price || '';
+            cell5.innerHTML = transactions[i].quantity;
+            cell6.innerHTML = transactions[i].totalPrice || '';
+            cell7.innerHTML = transactions[i].createdDate;
+          }
+        }
+      });
+    </script>
+  </div>
+ <div class='container'>
+   <h2>Pie chart of a distribution of sales per product</h2>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+   <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+
+   <script>
+     $.get('http://127.0.0.1:3000/api/transactions/', function(data, status) {
+       if (status == 'success') {
+         const transactions = data;
+         const newArray = transactions.map(({createdDate, name}) => ({createdDate, name}));
+
+         console.log(newArray);
+         var xyValues = newArray
+        console.log(transactions)
+         new Chart("myChart", {
+           type: "scatter",
+           data: {
+             datasets: [{
+               pointRadius: 10,
+               pointBackgroundColor: "rgb(0,0,255)",
+               data: xyValues
+             }]
+           },
+           options: {
+             legend: {display: false},
+           }
+         });
+       }
+     });
+   </script>
+ </div>
+</body>
+</html>

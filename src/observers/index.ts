@@ -1,0 +1,2 @@
+
+export * from './hello.observer';
